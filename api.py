@@ -15,12 +15,15 @@ MODEL_URL = "https://drive.google.com/uc?export=download&id=1eGKe3C7wjJJC-qz15M1
 MODEL_PATH = "web_classifier.pth"
 
 def download_model():
-    if not os.path.exists(MODEL_PATH):
-        print("Downloading model...")
-        response = requests.get(MODEL_URL)
-        with open(MODEL_PATH, 'wb') as f:
-            f.write(response.content)
-        print("Model downloaded successfully!")
+    if os.path.exists(MODEL_PATH):
+        os.remove(MODEL_PATH)  # Remove the existing model file
+    print("Downloading model...")
+    response = requests.get(MODEL_URL)
+    if response.status_code != 200:
+        raise Exception("Failed to download model. Status code: {}".format(response.status_code))
+    with open(MODEL_PATH, 'wb') as f:
+        f.write(response.content)
+    print("Model downloaded successfully!")
 
 # Initialize classifier
 classifier = None
